@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+    "name": "Galaxy Patrol",
+    "version": "1.7.3",
+    "description": "A fun and educational space shooting game! Toggle Between Fun and Math Mode!",
+    "icons": {
+        "128": "enemy128.png",
+        "48": "enemy48.png",
+        "16": "icon16.png"
+    },
+    "browser_action": {
+        "default_icon": "icon16.png",
+        "default_popup": "index.html"
+    }
+   
+}
