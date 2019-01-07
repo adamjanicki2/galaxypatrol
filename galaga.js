@@ -486,11 +486,10 @@ function playMath()
         {
             power = Math.floor(Math.random()*6+2);
             base = Math.floor(Math.random()*10+1);
-            while(base==power)
+            while(base==power || base==power-1 || base+1==power)
                 base = Math.floor(Math.random()*10+1);
             power1 = ""+power;
          question=true;
-            //power2 = base1.sup();
          clearInterval(interval);
             clearInterval(timevar);
             u = Math.floor(Math.random()*4+1);
@@ -503,7 +502,8 @@ function playMath()
             power = Math.floor(Math.random()*6+2);
             question=true;
             base = Math.floor(Math.random()*8+1);
-            
+            while(base==power || base==power-1 || base+1==power)
+                base = Math.floor(Math.random()*10+1);
             clearInterval(interval);
             clearInterval(timevar);
             u = Math.floor(Math.random()*4+1);
