@@ -12,6 +12,7 @@ var powerupY=0;
 var time = 250;
 var rand = 0;
 var ys = 0;
+var startup=true;
 var highscore;
 if(localStorage.getItem('highscore')==null)
     highscore=0;
@@ -189,12 +190,14 @@ function initAll()
   xwing = new Audio();
   xwing.src = "xwing.wav";
   setTitle();
-  interval = setInterval(setTitle,5);
+  timevar = setInterval(countTime,100);
+  interval = setInterval(setTitle,20);
 }
 function setTitle()
 {
   ctx.beginPath();
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawSpace();
   ctx.font = "100px Impact";
   ctx.fillStyle = "#ffffff";
   ctx.fillText("Galaxy",170,130);
@@ -211,8 +214,14 @@ function setTitle()
  
   if(enter==true)
   {
+      time=250;
+      var ts = 0;
+        var ts1 = 0;
+        var ts2 = 0;
       start=false;
+      startup=false;
       clearInterval(interval);
+      clearInterval(timevar);
       imgObj.style.visibility='visible';
       imgObj.style.left = imageX+'px';
       imgObj.style.top = imageY+'px';
@@ -224,8 +233,14 @@ function setTitle()
   }
   else if(playMathMode==true)
   {
-      start=false;
-      clearInterval(interval);
+    time=250;
+    var ts = 0;
+      var ts1 = 0;
+      var ts2 = 0;
+    start=false;
+    startup=false;
+    clearInterval(interval);
+    clearInterval(timevar);
       imgObj.style.visibility='visible';
       imgObj.style.left = imageX+'px';
       imgObj.style.top = imageY+'px';
@@ -240,7 +255,8 @@ function setTitle()
 }
 function countTime()
 {
-   time++;
+    if(startup==false)
+        time++;
    if(time==300)
    {
        rand = Math.floor(Math.random()*6+1);
@@ -328,9 +344,8 @@ function playFun()
             localStorage.setItem('highscore',score);
       win=true;
       clearInterval(interval);
-      clearInterval(timevar);
       sad.play();
-      interval = setInterval(setWin, 5);
+      interval = setInterval(setWin, 20);
       setWin();
   }
   if(hits==320)
@@ -339,8 +354,7 @@ function playFun()
         localStorage.setItem('highscore',score);
       win=true;
       clearInterval(interval);
-      clearInterval(timevar);
-      interval = setInterval(setWin, 5);
+      interval = setInterval(setWin, 20);
       setWin();
   }
   if(counter==0)
@@ -452,7 +466,6 @@ function playMath()
         localStorage.setItem('highscore',score);
       win=true;
       clearInterval(interval);
-      clearInterval(timevar);
       sad.play();
       interval = setInterval(setWin, 5);
       setWin();
@@ -463,7 +476,6 @@ function playMath()
         localStorage.setItem('highscore',score);
       win=true;
       clearInterval(interval);
-      clearInterval(timevar);
       interval = setInterval(setWin, 5);
       setWin();
   }
@@ -990,7 +1002,7 @@ function drawEnemies()
 }
 function drawPower()
 {
-   if(time==300)
+   if(time==300 && startup==false)
    {
        time=0;
        powerupX = randomX;
@@ -1286,6 +1298,7 @@ function drawHearts3()
        ctx.fill();
    }
 }
+
 function setWin()
 {
    ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1293,7 +1306,7 @@ function setWin()
   if(hits==320)
   {
   ctx.beginPath();
-  var acc = Math.floor((hits/shotnum)*100);
+    var acc = Math.floor((hits/shotnum)*100);
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.font = "100px Impact";
   ctx.fillStyle = "#ffffff";
