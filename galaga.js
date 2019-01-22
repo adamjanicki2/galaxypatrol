@@ -14,10 +14,7 @@ var rand = 0;
 var ys = 0;
 var startup=true;
 var highscore;
-if(localStorage.getItem('highscore')==null)
-    highscore=0;
-else 
-    highscore = localStorage.getItem('highscore');
+highscore=localStorage.getItem('highscore');
 var question=false;
 var shield = false;
 var shotsHeight = 10;
@@ -105,7 +102,7 @@ var power2;
 var shotTime = 3;
 var enemyrowcount = 4;
 var enemycolumncount = 8;
-var shotSpeed = -4;
+var shotSpeed = -6;
 var shotsWidth = 4;
 var leftPressed = false;
 var rightPressed = false;
@@ -340,8 +337,14 @@ function playFun()
   makeShield();
   if(lives<=0)
   {
-      if(score>highscore)
-            localStorage.setItem('highscore',score);
+    if(highscore==null)
+    {
+        
+    }
+    else if(score>highscore)
+    {
+        localStorage.setItem('highscore',score);
+    } 
       win=true;
       clearInterval(interval);
       sad.play();
@@ -350,8 +353,14 @@ function playFun()
   }
   if(hits==320)
   {
-    if(score>highscore)
-        localStorage.setItem('highscore',score);
+    if(highscore==null)
+   {
+    localStorage.setItem('highscore',score);
+   }
+   else if(score>highscore)
+   {
+    localStorage.setItem('highscore',score);
+   }
       win=true;
       clearInterval(interval);
       interval = setInterval(setWin, 20);
@@ -411,11 +420,15 @@ function makeButtonOne()
 {
    ctx.beginPath();
    if(yellow1==true)
-       ctx.fillStyle="#dbff4d";
+   {
+    ctx.fillStyle="#dbff4d";
+    ctx.ellipse(300,305,120,40,0,0,2*Math.PI,false);
+   }
    else if(yellow1==false)
-       ctx.fillStyle="rgb(255,255,255)";
-  
-   ctx.rect(200,280,200,50);
+   {
+    ctx.fillStyle="rgb(255,255,255)";
+    ctx.ellipse(300,305,110,30,0,0,2*Math.PI,false);
+   }
    ctx.fill();
    ctx.closePath();
 }
@@ -423,11 +436,15 @@ function makeButtonTwo()
 {
    ctx.beginPath();
    if(yellow2==true)
-       ctx.fillStyle="rgb(0,250,250)";
+   {
+        ctx.fillStyle="rgb(0,250,250)";
+        ctx.ellipse(300,405,95,40,0,0,2*Math.PI,false);
+   }
    else if(yellow2==false)
-       ctx.fillStyle="rgb(255,255,255)";
-  
-   ctx.rect(225,380,150,50);
+   {
+        ctx.fillStyle="rgb(255,255,255)";
+        ctx.ellipse(300,405,85,30,0,0,2*Math.PI,false);
+   }
    ctx.fill();
    ctx.closePath();
 }
@@ -462,8 +479,14 @@ function playMath()
   makeShield();
   if(lives<=0)
   {
-    if(score>highscore)
-        localStorage.setItem('highscore',score);
+    if(highscore==null)
+   {
+       
+   }
+   else if(score>highscore)
+   {
+    localStorage.setItem('highscore',score);
+   }
       win=true;
       clearInterval(interval);
       sad.play();
@@ -472,8 +495,14 @@ function playMath()
   }
   if(hits==320)
   {
-    if(score>highscore)
-        localStorage.setItem('highscore',score);
+    if(highscore==null)
+   {
+      
+   }
+   else if(score>highscore)
+   {
+       localStorage.setItem('highscore',score);
+   }
       win=true;
       clearInterval(interval);
       interval = setInterval(setWin, 5);
@@ -1174,7 +1203,12 @@ function printScore()
   ctx.fillStyle = "#ffffff";
   ctx.fillText("Level: "+level,305,60);
   ctx.fillText("Score: "+score,480,60);
-  ctx.fillText("HI: "+highscore,390,60);
+  if(highscore!=null)
+        ctx.fillText("HI: "+highscore,390,60);
+else{
+    highscore=0;
+    ctx.fillText("HI: "+highscore,390,60);
+}
 }
 function drawSpace()
 {
@@ -1195,7 +1229,8 @@ function drawSpace()
           makespace = false;
       }
       ctx.rect(spaceX[i],spaceY[i], w[i],h[i]);
-      ctx.fillStyle = "rgb(10,10,250)";
+      
+      ctx.fillStyle = "rgb(10,10,255)";
       ctx.fill();
       spaceY[i]+=spaceSpeed;
   }
@@ -1303,6 +1338,7 @@ function setWin()
 {
    ctx.clearRect(0,0,canvas.width,canvas.height);
   imgObj.style.visibility = "hidden";
+  drawSpace();
   if(hits==320)
   {
   ctx.beginPath();
@@ -1320,12 +1356,7 @@ function setWin()
    else if(shotnum==0)
        ctx.fillText("Accuracy: "+"0%",200,430);
   ctx.font = "20px Courier New";
-  if(yellow3==true)
-       ctx.fillStyle = "#dbff4d";
-   else if(yellow3==false)
-       ctx.fillStyle = "#ffffff";
-  ctx.rect(255,460, 100,25);
-  ctx.fill();
+  makeButton3();
   ctx.fillStyle = "#000000";
   ctx.fillText("Restart",260,480);
   ctx.closePath();
@@ -1347,16 +1378,21 @@ function setWin()
    else if(shotnum==0)
        ctx.fillText("Accuracy: "+"0%",200,430);
   ctx.font = "20px Courier New";
-  if(yellow3==true)
-       ctx.fillStyle = "#dbff4d";
-   else if(yellow3==false)
-       ctx.fillStyle = "#ffffff";
-  ctx.rect(255,460, 100,25);
-  ctx.fill();
+  makeButton3();
   ctx.fillStyle = "#000000";
   ctx.fillText("Restart",260,480);
   ctx.closePath();
   }
+}
+function makeButton3()
+{
+        ctx.beginPath();
+    if(yellow3==true)
+       ctx.fillStyle = "#dbff4d";
+   else if(yellow3==false)
+       ctx.fillStyle = "#ffffff";
+    ctx.rect(255,460, 100,25);
+    ctx.fill();
 }
 function keyDownHandler(e)
 {
@@ -1398,7 +1434,7 @@ function mouseUpHandler(e)
   {
       document.location.reload();
   }
-  if(start==true && x>=225 && x<=375 && y>=380 && y<=430)
+  if(start==true && x>=215 && x<=385 && y>=380 && y<=430)
   {
       enter=true;
       music.play();
@@ -1456,7 +1492,7 @@ function mouseMoveHandler(e)
 {
    x1 = e.clientX - canvas.offsetLeft;
    y1 = e.clientY - canvas.offsetTop;
-   if(start==true && x1>=225 && x1<=375 && y1>=380 && y1<=430)
+   if(start==true && x1>=215 && x1<=385 && y1>=380 && y1<=430)
   {
       yellow2=true;
   }
@@ -1464,7 +1500,7 @@ function mouseMoveHandler(e)
   {
       yellow1=true;
   }
-  if(start==true && (x1<=225 || x1>=375) || (y1<=380 || y1>=430) && yellow2 == true)
+  if(start==true && (x1<=215 || x1>=385) || (y1<=380 || y1>=430) && yellow2 == true)
   {
       yellow2=false;
   }
