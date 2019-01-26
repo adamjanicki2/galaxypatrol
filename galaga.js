@@ -15,13 +15,35 @@ var ys = 0;
 var startup=true;
 var highscore;
 highscore=localStorage.getItem('highscore');
+var totalCredits;
+totalCredits=localStorage.getItem('coins');
+var ultimatePower;
+ultimatePower=localStorage.getItem('ultimatepower');
+if(ultimatePower==null)
+{
+    ultimatePower=1;
+    localStorage.setItem('ultimatepower',ultimatePower);
+}
+var extraLife;
+extraLife=localStorage.getItem('lives');
+if(extraLife==null)
+{
+    extralife=1;
+    localStorage.setItem('lives',extraLife);
+}
 var question=false;
 var shield = false;
 var shotsHeight = 10;
 var powerup =false;
 var sw = 4;
 var sh = 10;
+var yellow5=false;
+var yellow6=false;
+var yellow7=false;
+var back=false;
+var setStore=false;
 var heartBuffer=40;
+var yellow4=false;
 var aChange=false;
 var bChange=false;
 var cChange=false;
@@ -159,6 +181,8 @@ function initAll()
         
       }
   }
+  if(extraLife==2)
+        lives=4;
   imgObj = document.getElementById('myImage');
   imgObj.style.position= 'absolute';
   imgObj.style.top = (canvas.offsetTop-20)+'px';
@@ -203,11 +227,14 @@ function setTitle()
   ctx.fillText("Adam Janicki", 235, 260)
   makeButtonOne();
   makeButtonTwo();
+  makeButtonThree();
   ctx.fillStyle = "#000000";
   ctx.font = "38px Impact";
-  ctx.fillText("Fun Mode", 225, 420);
+  ctx.fillText("Fun Mode", 225, 395);
   ctx.font = "33px Impact";
   ctx.fillText("Calculus Mode",200,320);
+  ctx.font = "43px Impact";
+  ctx.fillText("Store",252,470)
  
   if(enter==true)
   {
@@ -249,6 +276,88 @@ function setTitle()
       countTime();
       playMath();
   }
+  else if(setStore==true)
+  {
+      x=0;
+      y=0;
+    imgObj2.style.visibility='hidden';
+    imgObj.style.visibility='hidden';
+      clearInterval(interval);
+      interval=setInterval(makeStore,20);
+  }
+}
+function makeStore()
+{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawSpace();
+    ctx.font = "100px Impact"
+    ctx.fillStyle="#ffffff";
+    ctx.fillText("Store",190,110);
+    ctx.font = "30px Impact";
+    if(totalCredits!=null)
+        ctx.fillText("Coins: "+totalCredits,20,30);
+    else if(totalCredits==null)
+    {
+        totalCredits=0;
+        ctx.fillText("Coins: "+totalCredits,20,30);
+    }
+    ctx.font = "50px Impact";
+    ctx.fillText("Ultimate Power Up",120,200);
+    ctx.fillText("Extra Life",210,400);
+    ctx.font = "18px Courier New";
+    ctx.fillText("This Power Up gives you shield, rapid fire,",90,240);
+    ctx.fillText("score x2, and an extra life all at once.",90,270);
+    makeBuyOne();
+    makeBuyTwo();
+    makeBack();
+    ctx.font = "36px Impact";
+    ctx.fillStyle="#000000";
+    ctx.fillText("Buy 200C",230,330);
+    ctx.fillText("Buy 250C",230,470);
+    ctx.font = "32px Impact";
+    ctx.fillText("Back",30,468);
+    if(back==true)
+    {
+        x=0;
+        y=0;
+        setStore=false;
+        back=false;
+        imgObj2.style.visibility='visible';
+        imgObj.style.visibility='visible';
+        clearInterval(interval);
+        interval=setInterval(setTitle,20);
+
+    }
+}
+function makeBuyOne()
+{
+    ctx.beginPath();
+    if(yellow5==true)
+       ctx.fillStyle = "#dbff4d";
+   else if(yellow5==false)
+       ctx.fillStyle = "#ffffff";
+    ctx.rect(225,290, 150,50);
+    ctx.fill();
+}
+function makeBack()
+{
+    ctx.beginPath();
+    if(yellow7==true)
+       ctx.fillStyle = "rgb(0,250,250)";
+   else if(yellow7==false)
+       ctx.fillStyle = "#ffffff";
+    ctx.rect(25,435, 80,40);
+    ctx.fill();
+}
+function makeBuyTwo()
+{
+    ctx.beginPath();
+    if(yellow6==true)
+       ctx.fillStyle = "rgb(30,230,150)";
+   else if(yellow6==false)
+       ctx.fillStyle = "#ffffff";
+    ctx.rect(225,430, 150,50);
+    ctx.fill();
 }
 function countTime()
 {
@@ -256,7 +365,10 @@ function countTime()
         time++;
    if(time==300)
    {
-       rand = Math.floor(Math.random()*6+1);
+       if(ultimatePower==2)
+            rand = Math.floor(Math.random()*7+1);
+        else
+            rand = Math.floor(Math.random()*6+1);
        randomX = Math.floor(Math.random()*(canvas.width-100)+50);
    }
   ts++;
@@ -265,7 +377,7 @@ function countTime()
   {
       ts2++;
   }
-  if(rand==2 || rand==3 || rand==4 || rand==5 || rand==6)
+  if(rand==2 || rand==3 || rand==4 || rand==5 || rand==6 || rand==7)
   {
       if(powerup==true)
            limit++;
@@ -304,6 +416,15 @@ function countTime()
           limit=0;
           rand=0;
       }
+      else if(rand==7)
+      {
+          shield=false;
+          scoreInc = scoreInc/2;
+          shotTime = 3;
+        shotSpeed = shotSpeed/2;
+          limit=0;
+          rand=0;
+      }
       powerup=false;
   }
 }
@@ -337,6 +458,8 @@ function playFun()
   makeShield();
   if(lives<=0)
   {
+    totalCredits=parseInt(totalCredits,10)+level;
+    localStorage.setItem('coins',totalCredits)
     if(highscore==null)
     {
         
@@ -353,6 +476,8 @@ function playFun()
   }
   if(hits==320)
   {
+    totalCredits=parseInt(totalCredits,10)+level;
+    localStorage.setItem('coins',totalCredits)
     if(highscore==null)
    {
     localStorage.setItem('highscore',score);
@@ -438,15 +563,31 @@ function makeButtonTwo()
    if(yellow2==true)
    {
         ctx.fillStyle="rgb(0,250,250)";
-        ctx.ellipse(300,405,95,40,0,0,2*Math.PI,false);
+        ctx.ellipse(300,380,95,40,0,0,2*Math.PI,false);
    }
    else if(yellow2==false)
    {
         ctx.fillStyle="rgb(255,255,255)";
-        ctx.ellipse(300,405,85,30,0,0,2*Math.PI,false);
+        ctx.ellipse(300,380,85,30,0,0,2*Math.PI,false);
    }
    ctx.fill();
    ctx.closePath();
+}
+function makeButtonThree()
+{
+    ctx.beginPath();
+    if(yellow4==true)
+    {
+        ctx.fillStyle="rgb(30,230,150)";
+        ctx.ellipse(300,455,95,40,0,0,2*Math.PI,false);
+    }
+    else if(yellow4==false)
+    {
+        ctx.fillStyle="rgb(255,255,255)";
+        ctx.ellipse(300,455,85,30,0,0,2*Math.PI,false);
+    }
+    ctx.fill();
+    ctx.closePath();
 }
 function makeShield()
 {
@@ -479,6 +620,8 @@ function playMath()
   makeShield();
   if(lives<=0)
   {
+    totalCredits=parseInt(totalCredits,10)+level;
+    localStorage.setItem('coins',totalCredits)
     if(highscore==null)
    {
        
@@ -490,11 +633,13 @@ function playMath()
       win=true;
       clearInterval(interval);
       sad.play();
-      interval = setInterval(setWin, 5);
+      interval = setInterval(setWin, 20);
       setWin();
   }
   if(hits==320)
   {
+    totalCredits=parseInt(totalCredits,10)+level;
+    localStorage.setItem('coins',totalCredits)
     if(highscore==null)
    {
       
@@ -505,7 +650,7 @@ function playMath()
    }
       win=true;
       clearInterval(interval);
-      interval = setInterval(setWin, 5);
+      interval = setInterval(setWin, 20);
       setWin();
   }
   if(counter==0)
@@ -719,6 +864,17 @@ function collisionDetection() {
       else if(powerupY+30>=imageY+20 && rand==6 && powerupY+30<=canvas.width+25)
       {
        shield=true;
+       powerupY=600;
+       rapid.play();
+       powerup=true;
+      }
+      else if(powerupY+30>=imageY+20 && rand==7 && powerupY+30<=canvas.width+25)
+      {
+       shield=true;
+       scoreInc = scoreInc*2;
+       shotTime =1;
+       shotSpeed = shotSpeed *2;
+       lives++;
        powerupY=600;
        rapid.play();
        powerup=true;
@@ -1098,6 +1254,15 @@ function drawPower()
        ctx.font = "8px Courier New";
        ctx.fillText("shield",powerupX,powerupY+16);
    }
+   else if(rand==7)
+   {
+       ctx.fillStyle = "rgb(50,230,150)";
+       ctx.rect(powerupX, powerupY, 30,30)
+       ctx.fill();
+       ctx.fillStyle = "rgb(0,0,0)";
+       ctx.font = "30px Courier New";
+       ctx.fillText("U",powerupX+6,powerupY+23);
+   }
    powerupY+=ys;
 
 }
@@ -1333,12 +1498,10 @@ function drawHearts3()
        ctx.fill();
    }
 }
-
 function setWin()
 {
    ctx.clearRect(0,0,canvas.width,canvas.height);
   imgObj.style.visibility = "hidden";
-  drawSpace();
   if(hits==320)
   {
   ctx.beginPath();
@@ -1350,7 +1513,7 @@ function setWin()
   ctx.font = "50px Impact";
   ctx.fillText("Score: "+score,200,280);
   ctx.fillText("High: "+highscore,200,330);
-  ctx.fillText("Shots: "+shotnum,200,380);
+  ctx.fillText("Coins: "+level,200,380);
   if(shotnum>0)
        ctx.fillText("Accuracy: "+acc+"%",200,430);
    else if(shotnum==0)
@@ -1364,6 +1527,7 @@ function setWin()
   else
   {
   ctx.beginPath();
+  drawSpace();
   var acc = Math.floor((hits/shotnum)*100);
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.font = "100px Impact";
@@ -1372,7 +1536,7 @@ function setWin()
   ctx.font = "50px Impact";
   ctx.fillText("Score: "+score,200,280);
   ctx.fillText("High: "+highscore,200,330);
-  ctx.fillText("Shots: "+shotnum,200,380);
+  ctx.fillText("Coins: "+level,200,380);
   if(shotnum>0)
        ctx.fillText("Accuracy: "+acc+"%",200,430);
    else if(shotnum==0)
@@ -1430,16 +1594,43 @@ function mouseUpHandler(e)
 {
   x = e.clientX - canvas.offsetLeft;
   y = e.clientY - canvas.offsetTop;
+  if(setStore==true && x>=25 && x<=105 && y>=435 && y<=475)
+        back=true;
+  if(setStore==true && x>=225 && x<=375 && y>=290 && y<=340 && ultimatePower!=2)
+  {
+      if(totalCredits>=200)
+      {
+          ultimatePower=2;
+          localStorage.setItem('ultimatepower',ultimatePower);
+          totalCredits-=200;
+          localStorage.setItem('coins',totalCredits)
+      }
+  }
+  if(setStore==true && x>=225 && x<=375 && y>=430 && y<=470 && extraLife!=2)
+  {
+      if(totalCredits>=250)
+      {
+            extraLife=2;
+            lives=4;
+            localStorage.setItem('lives',extraLife);
+            totalCredits-=250;
+            localStorage.setItem('coins',totalCredits)
+      }
+  }
   if(x>=255 && x<=355 && y>=460 && y<485 && win==true)
   {
       document.location.reload();
   }
-  if(start==true && x>=215 && x<=385 && y>=380 && y<=430)
+  if(start==true && setStore==false && x>=215 && x<=385 && y>=355 && y<=405)
   {
       enter=true;
       music.play();
   }
-  if(start==true && x>=200 && x<=400 && y>=280 && y<=330)
+  if(start==true && x>=215 && x<=385 && y>=430 && y<=480)
+  {
+      setStore=true;
+  }
+  if(start==true && setStore==false && x>=200 && x<=400 && y>=280 && y<=330)
   {
       playMathMode=true;
       music.play();
@@ -1492,7 +1683,19 @@ function mouseMoveHandler(e)
 {
    x1 = e.clientX - canvas.offsetLeft;
    y1 = e.clientY - canvas.offsetTop;
-   if(start==true && x1>=215 && x1<=385 && y1>=380 && y1<=430)
+   if(x1>=225 && x1<=375 && y1>=290 && y1<=340)
+        yellow5=true;
+    if(x1<=225 || x1>=375 || y1<=290 || y1>=340)
+        yellow5=false;
+    if(x1>=225 && x1<=375 && y1>=430 && y1<=470)
+        yellow6=true;
+    if(x1<=225 || x1>=375 || y1<=430 || y1>=470)
+        yellow6=false;
+    if(x1>=25 && x1<=105 && y1>=435 && y1<=475)
+        yellow7=true;
+    if(x1<=25 || x1>=105 || y1<=435 || y1>=475)
+        yellow7=false;
+   if(start==true && x1>=215 && x1<=385 && y1>=355 && y1<=405)
   {
       yellow2=true;
   }
@@ -1500,13 +1703,21 @@ function mouseMoveHandler(e)
   {
       yellow1=true;
   }
-  if(start==true && (x1<=215 || x1>=385) || (y1<=380 || y1>=430) && yellow2 == true)
+  if(start==true && (x1<=215 || x1>=385) || (y1<=355 || y1>=405) && yellow2 == true)
   {
       yellow2=false;
   }
   if(start==true && (x1<=200 || x1>=400) || (y1<=280 || y1>=330) && yellow1 == true)
   {
       yellow1=false;
+  }
+  if(start==true && x1>=215 && x1<=385 && y1>=430 && y1<=480)
+  {
+      yellow4=true;
+  }
+  if(start==true && (x1<=215 || x1>=385) || (y1<=430 || y1>=480) && yellow2 == true)
+  {
+      yellow4=false;
   }
   if(x1>=255 && x1<=355 && y1>=460 && y1<485 && win==true)
   {
